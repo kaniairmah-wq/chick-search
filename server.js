@@ -1,12 +1,18 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
+const { GoogleGenAI } = require('@google/genai');
 
 const app = express();
 app.use(express.static(path.join(__dirname)));
 const startTime = Date.now();
 
-// Daftar kata yang disensor kalau SafeSearch aktif
+// Inisialisasi Google GenAI SDK (Pastikan GEMINI_API_KEY diset di Environment atau hardcode untuk tes)
+const ai = new GoogleGenAI({
+    apiKey: process.env.GEMINI_API_KEY || "MASUKKAN_API_KEY_GEMINI_LU_DISINI"
+});
+
+// Daftar kata SafeSearch
 const ADULT_KEYWORDS = ['porn', 'xxx', 'sex', 'gambling', 'casino', 'slot', 'bokep', 'judi', '18+'];
 
 // Membaca file database.json
@@ -21,17 +27,17 @@ function getLocalDatabase() {
     }
 }
 
-// Homepage Route
+// Homepage
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// Route Khusus Favicon & Logo
+// Favicon & Logo
 app.get('/logo.png', (req, res) => {
     res.sendFile(path.join(__dirname, 'logo.png'));
 });
 
-// Fitur Surprise Me (Random Site Redirect)
+// Surprise Me
 app.get('/surprise', (req, res) => {
     const db = getLocalDatabase();
     if (db.length === 0) return res.redirect('/');
@@ -39,7 +45,7 @@ app.get('/surprise', (req, res) => {
     res.redirect(db[randomIndex].url);
 });
 
-// Fitur System Status Diagnostic
+// System Status
 app.get('/status', (req, res) => {
     const db = getLocalDatabase();
     const uptime = Math.floor((Date.now() - startTime) / 1000);
@@ -61,7 +67,8 @@ app.get('/status', (req, res) => {
             <h2>System Diagnostics</h2>
             <hr>
             <p><strong>STATUS:</strong> ONLINE</p>
-            <p><strong>INDEXED DATABASE:</strong> ${db.length} Pages & Sub-Webs</p>
+            <p><strong>AI ENGINE:</strong> Gemini 3.7 Flash</p>
+            <p><strong>INDEXED DATABASE:</strong> ${db.length} Pages</p>
             <p><strong>ENGINE UPTIME:</strong> ${uptime} seconds</p>
             <p><strong>MEMORY USAGE:</strong> ${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)} MB</p>
         </body>
@@ -69,7 +76,7 @@ app.get('/status', (req, res) => {
     `);
 });
 
-// Halaman Settings
+// Settings Route
 app.get('/settings', (req, res) => {
     res.send(`
         <!DOCTYPE html>
@@ -135,14 +142,14 @@ app.get('/settings', (req, res) => {
     `);
 });
 
-// Main Search Route (with AI Overview)
-app.get('/search', (req, res) => {
+// Main Search Route (with real Gemini 3.7 Flash AI Overview)
+app.get('/search', async (req, res) => {
     const rawQuery = req.query.q || '';
     const query = rawQuery.toLowerCase().trim();
 
     if (!query) return res.redirect('/');
 
-    // Quick Calculator Widget
+    // Quick Calculator
     let calcResultWidget = '';
     if (/^[0-9+\-*/().\s]+$/.test(rawQuery) && rawQuery.length > 1) {
         try {
@@ -151,7 +158,7 @@ app.get('/search', (req, res) => {
         } catch (e) {}
     }
 
-    // Filter Database Lokal
+    // Filter Database
     const LOCAL_DATABASE = getLocalDatabase();
     const localResults = LOCAL_DATABASE.filter(item => {
         const title = (item.title || '').toLowerCase();
@@ -160,24 +167,44 @@ app.get('/search', (req, res) => {
         return title.includes(query) || desc.includes(query) || url.includes(query);
     });
 
-    // Fitur AI Overview Box
+    // Real Gemini 3.7 Flash Generation
     let aiOverviewWidget = '';
-    if (localResults.length > 0) {
-        const summaryText = localResults.slice(0, 3).map(r => r.desc || r.title).join(' ');
-        aiOverviewWidget = `
-            <div style="background-color: #f8f9fa; border: 1px solid #dcdcdc; border-radius: 8px; padding: 14px; margin-bottom: 25px; max-width: 680px; font-family: sans-serif;">
-                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                    <span style="font-size: 16px;">✨</span>
-                    <strong style="font-size: 13px; color: #1a0dab; text-transform: uppercase; letter-spacing: 0.5px;">AI Overview</strong>
-                </div>
-                <div style="font-size: 13.5px; line-height: 1.5; color: #202124;">
-                    Hasil index untuk <b>"${rawQuery}"</b>: ${summaryText}
-                </div>
-            </div>
-        `;
+    if (query.length > 0) {
+        try {
+            const prompt = `You are the AI Overview summary engine for ChickSearch (a retro search engine).
+The user is searching for: "${rawQuery}".
+Indexed websites available in context: ${JSON.stringify(localResults.slice(0, 4))}.
+
+Instructions:
+- Provide a clear, concise overview in English (2 to 3 sentences max).
+- If specific retro/indexed websites match, briefly synthesize what the user can find.
+- Tone: Natural, direct, helpful search engine summary.`;
+
+            const response = await ai.models.generateContent({
+                model: 'gemini-2.5-flash',
+                contents: prompt,
+            });
+
+            const aiText = response.text || '';
+            if (aiText) {
+                aiOverviewWidget = `
+                    <div style="background-color: #f8f9fa; border: 1px solid #dcdcdc; border-radius: 8px; padding: 14px; margin-bottom: 25px; max-width: 680px; font-family: sans-serif;">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                            <span style="font-size: 16px;">✨</span>
+                            <strong style="font-size: 13px; color: #1a0dab; text-transform: uppercase; letter-spacing: 0.5px;">AI Overview (Gemini Flash)</strong>
+                        </div>
+                        <div style="font-size: 13.5px; line-height: 1.6; color: #202124;">
+                            ${aiText.replace(/\n/g, '<br>')}
+                        </div>
+                    </div>
+                `;
+            }
+        } catch (err) {
+            console.error("Gemini AI API Error:", err.message);
+        }
     }
 
-    // Generate Hasil Web
+    // Generate Daftar Web
     let resultsHtml = '';
     localResults.forEach(item => {
         const desc = item.desc || item.description || '';
