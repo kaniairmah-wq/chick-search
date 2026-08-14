@@ -212,25 +212,17 @@ app.get('/settings', (req, res) => {
 });
 
 // Main Search Route (With SafeSearch + Lite Search support)
+// Main Search Route (With SafeSearch + Lite Search support & Quick Indicator)
 app.get('/search', (req, res) => {
     const rawQuery = req.query.q || '';
     const query = rawQuery.toLowerCase().trim();
     const safeMode = req.query.safe !== '0';
-    const liteMode = req.query.lite === '1'; // Lite Search aktif
+    const liteMode = req.query.lite === '1'; // 1 = aktif, 0 = nonaktif
 
     if (!query) return res.redirect('/');
 
-    // Quick Calculator Widget
-    let calcResultWidget = '';
-    if (/^[0-9+\-*/().\s]+$/.test(rawQuery) && rawQuery.length > 1) {
-        try {
-            const evalResult = eval(rawQuery);
-            calcResultWidget = `<p style="margin: 10px 0 20px 0; font-family: monospace; font-size: 14px;"><strong>Calc:</strong> ${rawQuery} = <b>${evalResult}</b></p>`;
-        } catch (e) {}
-    }
-
-    // List domain berat/bloated yang di-skip pas Lite Mode aktif
-    const HEAVY_DOMAINS = ['youtube.com', 'facebook.com', 'instagram.com', 'tiktok.com', 'twitter.com', 'x.com', 'reddit.com'];
+    // List domain berat/bloated yang di-skip kalau Lite Mode aktif
+    const HEAVY_DOMAINS = ['youtube.com', 'facebook.com', 'instagram.com', 'tiktok.com', 'twitter.com', 'x.com', 'reddit.com', 'netflix.com'];
 
     // Filter dari Database Lokal
     const LOCAL_DATABASE = getLocalDatabase();
@@ -240,11 +232,11 @@ app.get('/search', (req, res) => {
         const url = (item.url || '').toLowerCase();
         const keywords = Array.isArray(item.keywords) ? item.keywords.join(' ').toLowerCase() : (item.keywords || '').toLowerCase();
 
-        // 1. Cek kecocokan query
+        // 1. Cek query
         const isMatch = title.includes(query) || desc.includes(query) || url.includes(query) || keywords.includes(query);
         if (!isMatch) return false;
 
-        // 2. Filter SafeSearch
+        // 2. SafeSearch
         if (safeMode) {
             const isAdult = ADULT_KEYWORDS.some(badWord => 
                 title.includes(badWord) || desc.includes(badWord) || url.includes(badWord) || keywords.includes(badWord)
@@ -252,7 +244,7 @@ app.get('/search', (req, res) => {
             if (isAdult) return false;
         }
 
-        // 3. Filter Lite Search (Skip konten berat / dynamic apps)
+        // 3. Lite Search (Hapus yang berat atau bertanda heavy: true)
         if (liteMode) {
             const isHeavy = HEAVY_DOMAINS.some(domain => url.includes(domain)) || item.heavy === true;
             if (isHeavy) return false;
@@ -276,7 +268,7 @@ app.get('/search', (req, res) => {
     });
 
     if (resultsHtml === '') {
-        resultsHtml = `<p style="font-size: 14px; margin-top: 20px;">No direct matches found in index for "<b>${rawQuery}</b>".</p>`;
+        resultsHtml = `<p style="font-size: 14px; margin-top: 20px;">No direct matches found in index for "<b>${rawQuery}</b>" (Lite Mode: ${liteMode ? 'ON' : 'OFF'}).</p>`;
     }
 
     res.send(`
@@ -298,7 +290,7 @@ app.get('/search', (req, res) => {
                     display: flex;
                     align-items: center;
                     justify-content: space-between;
-                    margin-bottom: 25px;
+                    margin-bottom: 15px;
                 }
                 .search-box {
                     display: flex;
@@ -334,6 +326,12 @@ app.get('/search', (req, res) => {
                     text-decoration: none;
                     margin-left: 12px;
                 }
+                .mode-badge {
+                    font-family: monospace;
+                    font-size: 12px;
+                    color: ${liteMode ? '#008000' : '#888'};
+                    margin-bottom: 20px;
+                }
             </style>
         </head>
         <body>
@@ -342,8 +340,8 @@ app.get('/search', (req, res) => {
                     <a href="/" class="brand">chick</a>
                     <form action="/search" method="GET" style="margin: 0; display: inline;" onsubmit="attachParams(this)">
                         <input type="text" name="q" value="${rawQuery}" required>
-                        <input type="hidden" name="safe" id="safeInput" value="1">
-                        <input type="hidden" name="lite" id="liteInput" value="0">
+                        <input type="hidden" name="safe" id="safeInput" value="${safeMode ? '1' : '0'}">
+                        <input type="hidden" name="lite" id="liteInput" value="${liteMode ? '1' : '0'}">
                         <input type="submit" value="Search">
                     </form>
                 </div>
@@ -353,7 +351,10 @@ app.get('/search', (req, res) => {
                 </div>
             </div>
 
-            ${calcResultWidget}
+            <div class="mode-badge">
+                [Lite Mode: <b>${liteMode ? 'ACTIVE (Pure HTML/Retro Only)' : 'OFF'}</b>]
+                — <a href="/search?q=${encodeURIComponent(rawQuery)}&safe=${safeMode ? '1' : '0'}&lite=${liteMode ? '0' : '1'}" style="color: #0000ee;">[Toggle ${liteMode ? 'OFF' : 'ON'}]</a>
+            </div>
 
             <div class="results-container">
                 ${resultsHtml}
