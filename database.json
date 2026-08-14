@@ -113,5 +113,117 @@
     "title": "Wikipedia Free Encyclopedia",
     "desc": "A free online encyclopedia, created and edited by volunteers around the world.",
     "url": "https://wikipedia.org"
+  },
+  {
+    "keywords": ["oxford", "dictionary", "meaning", "arti"],
+    "title": "Oxford English Dictionary - Definition",
+    "description": "Definition of words, pronunciation, etymology, and grammar references.",
+    "url": "https://www.oxfordlearnersdictionaries.com",
+    "specific_answer": "Oxford Dictionary: The definitive record of the English language."
+  },
+  {
+    "keywords": ["xbox", "game pass", "console", "microsoft"],
+    "title": "Xbox Official Site: Consoles, Games, and Game Pass",
+    "description": "Experience the new generation of games and entertainment with Xbox.",
+    "url": "https://www.xbox.com",
+    "specific_answer": "Xbox Console & Services status is operational. Game Pass active."
+  },
+  {
+    "keywords": ["zombo", "zombocom", "zombo com", "welcome"],
+    "title": "Zombo.com - Anything is Possible",
+    "description": "This is ZomboCom. Welcome to ZomboCom. The only limit is your own imagination.",
+    "url": "https://html5zombo.com",
+    "specific_answer": "Welcome to ZomboCom! You can do anything at ZomboCom. Infinite loop audio active since 1999."
+  },
+  {
+    "keywords": ["pointer", "pointerpointer", "tunjuk", "jari"],
+    "title": "Pointer Pointer - Find the Finger",
+    "description": "A web project that finds a photo of someone pointing exactly at your cursor location.",
+    "url": "https://pointerpointer.com",
+    "specific_answer": "Pointer Pointer: Locates precise coordinate image data matching mouse cursor placement."
+  },
+  {
+    "keywords": ["space", "jam", "spacejam", "1996", "movie"],
+    "title": "Space Jam Original 1996 Website",
+    "description": "The untouched original promotional website for the 1996 Space Jam movie.",
+    "url": "https://www.warnerbros.com/archive/spacejam/movie/jam.htm",
+    "specific_answer": "Space Jam (1996): Classic HTML web archive maintained continuously by Warner Bros."
+  },
+  {
+    "keywords": ["cat", "bounce", "kucing", "loncat"],
+    "title": "Cat Bounce! - Interactive Bouncing Cats",
+    "description": "A website where JavaScript physics cause cats to bounce endlessly across your screen.",
+    "url": "https://cat-bounce.com",
+    "specific_answer": "Cat Bounce: HTML5 canvas physics simulation of bouncing felines."
+  },
+  {
+    "keywords": ["camerons", "world", "geocities", "retro", "90s"],
+    "title": "Cameron's World - GeoCities Web Archive",
+    "description": "A web collage of text and animated GIFs archived from 1990s GeoCities personal sites.",
+    "url": "https://www.cameronsworld.net",
+    "specific_answer": "Cameron's World: A visual tribute to the archived classic 90s personal web aesthetic."
+  },
+  {
+    "keywords": ["flightradar24", "flightradar", "pesawat", "flight", "plane", "radar"],
+    "title": "Flightradar24: Live Flight Tracker",
+    "description": "Track air traffic in real-time around the world on an interactive map.",
+    "url": "https://www.flightradar24.com",
+    "specific_answer": "Flightradar24 Status: Real-time global flight tracking active. Live ADS-B signal feed online."
+  },
+  {
+    "keywords": ["google earth", "earth", "peta 3d", "globe", "satellite"],
+    "title": "Google Earth - 3D Satellite & Geographic Portal",
+    "description": "Explore the world from above with high-resolution satellite imagery and 3D terrain.",
+    "url": "https://earth.google.com/web",
+    "specific_answer": "Google Earth: Interactive 3D globe rendering engine and spatial geospatial mapping."
+  },
+  {
+    "keywords": ["marinetraffic", "kapal", "ship", "marine", "laut"],
+    "title": "MarineTraffic: Global Ship Tracking Intelligence",
+    "description": "Live map tracking of cargo ships, tankers, passenger vessels, and ports worldwide.",
+    "url": "https://www.marinetraffic.com",
+    "specific_answer": "MarineTraffic AIS: Automatic Identification System network reporting live maritime positions."
+  },
+  {
+    "keywords": ["iss", "space station", "stasiun luar angkasa", "nasa", "orbit"],
+    "title": "ISS Live Stream & Orbit Tracker",
+    "description": "Watch live video feeds from the International Space Station orbiting Earth.",
+    "url": "https://www.nasa.gov/multimedia/iss-hd-earth-viewing-experiment",
+    "specific_answer": "ISS Live Telemetry: Orbital altitude ~400km. Real-time Earth views streaming."
+  },
+  {
+    "keywords": ["archive", "wayback", "wayback machine", "web archive", "sejarah web"],
+    "title": "Internet Archive: Wayback Machine",
+    "description": "Explore over 800 billion web pages saved across digital internet history.",
+    "url": "https://archive.org/web/",
+    "specific_answer": "Wayback Machine: Digital historical snapshot index ready for URL lookup."
+  },
+  {
+    "keywords": ["radio garden", "radio", "peta radio", "suara dunia"],
+    "title": "Radio Garden - Live World Radio Map",
+    "description": "Rotate a 3D globe to tune into thousands of live local radio stations globally.",
+    "url": "http://radio.garden",
+    "specific_answer": "Radio Garden: Global live broadcast stream tuner operational."
+  },
+  {
+    "keywords": ["whatsapp", "wa", "chat", "pesan"],
+    "title": "WhatsApp Web - Private Messaging & Calling",
+    "description": "Send end-to-end encrypted messages and calls directly from your web browser.",
+    "url": "https://web.whatsapp.com",
+    "specific_answer": "WhatsApp Web: Encrypted communication gateway active. Scan QR code to authenticate session."
+  },
+  {
+    "keywords": ["facebook", "fb", "meta", "sosmed"],
+    "title": "Facebook - Connect with friends and the world around you",
+    "description": "Create an account or log in to Facebook. Share photos and videos, send messages and get updates.",
+    "url": "https://www.facebook.com",
+    "specific_answer": "Facebook Directory: Social network node operational. Feed and Graph API active."
+  },
+  {
+    "keywords": ["instagram", "ig", "foto", "reels"],
+    "title": "Instagram - Photo & Video Sharing",
+    "description": "A simple, fun & creative way to capture, edit & share photos, videos & messages with friends.",
+    "url": "https://www.instagram.com",
+    "specific_answer": "Instagram Feed: Visual media network online. Stories, Reels, and Direct Messaging ready."
   }
 ]
