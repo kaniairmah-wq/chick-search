@@ -1,0 +1,117 @@
+[
+  {
+    "title": "Google Search Engine",
+    "desc": "Search the world's information, including webpages, images, videos, and more.",
+    "url": "https://google.com"
+  },
+  {
+    "title": "Wiby Web Index",
+    "desc": "A dedicated retro web search engine cataloging lightweight, classic websites built purely with basic HTML markup rules.",
+    "url": "https://wiby.me"
+  },
+  {
+    "title": "FrogFind Gateway",
+    "desc": "A text-only web search engine proxy designed explicitly to work on vintage computers and early operating system browsers.",
+    "url": "http://frogfind.com"
+  },
+  {
+    "title": "DuckDuckGo Search",
+    "desc": "Private search engine that doesn't track your personal data or search query history.",
+    "url": "https://duckduckgo.com"
+  },
+  {
+    "title": "ChatGPT AI Portal",
+    "desc": "Use ChatGPT by OpenAI to answer questions, write, create images, complete work, and code.",
+    "url": "https://chatgpt.com"
+  },
+  {
+    "title": "Google Gemini AI",
+    "desc": "Google's conversational AI assistant designed to help you brainstorm ideas, write content, analyze files, and code.",
+    "url": "https://gemini.google.com"
+  },
+  {
+    "title": "Anthropic Claude AI",
+    "desc": "A next-generation AI assistant built by Anthropic, focused on safe, accurate, complex reasoning, and deep writing tasks.",
+    "url": "https://claude.ai"
+  },
+  {
+    "title": "YouTube Video Platform",
+    "desc": "Enjoy the videos and music you love, upload original content, and share it with the world.",
+    "url": "https://youtube.com"
+  },
+  {
+    "title": "Netflix Streaming",
+    "desc": "Watch TV shows, movies, documentaries, and award-winning original series.",
+    "url": "https://netflix.com"
+  },
+  {
+    "title": "Twitch Live Streaming",
+    "desc": "The world's leading live streaming platform for gamers, esports tournaments, and creative broadcasts.",
+    "url": "https://twitch.tv"
+  },
+  {
+    "title": "Spotify Web Player",
+    "desc": "Music for everyone. Stream millions of songs, albums, playlists, and podcasts completely free.",
+    "url": "https://open.spotify.com"
+  },
+  {
+    "title": "Reddit Communities",
+    "desc": "A massive network of communities where users dive into their interests, hobbies, gaming subreddits, and breaking news.",
+    "url": "https://reddit.com"
+  },
+  {
+    "title": "X / Twitter Social",
+    "desc": "From breaking news and entertainment to sports and politics, get the full story with real-time commentary.",
+    "url": "https://x.com"
+  },
+  {
+    "title": "Discord Web Portal",
+    "desc": "Voice, video, and text chat service used by tens of millions of people to hang out with their communities.",
+    "url": "https://discord.com"
+  },
+  {
+    "title": "GitHub Developer Platform",
+    "desc": "The world's leading developer platform where software engineering teams build, host, maintain, and share source code.",
+    "url": "https://github.com"
+  },
+  {
+    "title": "Stack Overflow",
+    "desc": "The largest and most trusted online community for developers to learn software engineering skills and solve bugs.",
+    "url": "https://stackoverflow.com"
+  },
+  {
+    "title": "Replit Cloud IDE",
+    "desc": "Build software collaboratively from any device in your browser without spending set-up time.",
+    "url": "https://replit.com"
+  },
+  {
+    "title": "Steam Store & Community",
+    "desc": "The ultimate destination for playing, discussing, and creating games across PC and handhelds.",
+    "url": "https://store.steampowered.com"
+  },
+  {
+    "title": "Roblox Gaming Platform",
+    "desc": "An immersive user-generated 3D gaming universe where players can build, play, and share custom games.",
+    "url": "https://roblox.com"
+  },
+  {
+    "title": "MyAbandonware Retro Archive",
+    "desc": "Database of over 25,000 classic abandonware PC games from MS-DOS, Windows 95/98, Amiga, and early consoles.",
+    "url": "https://myabandonware.com"
+  },
+  {
+    "title": "Minecraft Official Site",
+    "desc": "Explore infinite worlds, build anything from simple homes to grand castles, and survive in sandbox worlds.",
+    "url": "https://minecraft.net"
+  },
+  {
+    "title": "Archive.org Internet Archive",
+    "desc": "A non-profit digital library offering free access to millions of books, historical software, music, and archived web pages.",
+    "url": "https://archive.org"
+  },
+  {
+    "title": "Wikipedia Free Encyclopedia",
+    "desc": "A free online encyclopedia, created and edited by volunteers around the world.",
+    "url": "https://wikipedia.org"
+  }
+]
