@@ -211,91 +211,23 @@ app.get('/settings', (req, res) => {
     `);
 });
 
-// Main Search Route (With SafeSearch + Lite Search support)
-// Main Search Route (With SafeSearch + Lite Search support & Quick Indicator)
-app.get('/search', (req, res) => {
-    const rawQuery = req.query.q || '';
-    const query = rawQuery.toLowerCase().trim();
-    const safeMode = req.query.safe !== '0';
-    const liteMode = req.query.lite === '1'; // 1 = aktif, 0 = nonaktif
-
-    if (!query) return res.redirect('/');
-
-    // List domain berat/bloated yang di-skip kalau Lite Mode aktif
-    const HEAVY_DOMAINS = ['youtube.com', 'facebook.com', 'instagram.com', 'tiktok.com', 'twitter.com', 'x.com', 'reddit.com', 'netflix.com'];
-
-    // Filter dari Database Lokal
-    const LOCAL_DATABASE = getLocalDatabase();
-    const localResults = LOCAL_DATABASE.filter(item => {
-        const title = (item.title || '').toLowerCase();
-        const desc = (item.desc || item.description || '').toLowerCase();
-        const url = (item.url || '').toLowerCase();
-        const keywords = Array.isArray(item.keywords) ? item.keywords.join(' ').toLowerCase() : (item.keywords || '').toLowerCase();
-
-        // 1. Cek query
-        const isMatch = title.includes(query) || desc.includes(query) || url.includes(query) || keywords.includes(query);
-        if (!isMatch) return false;
-
-        // 2. SafeSearch
-        if (safeMode) {
-            const isAdult = ADULT_KEYWORDS.some(badWord => 
-                title.includes(badWord) || desc.includes(badWord) || url.includes(badWord) || keywords.includes(badWord)
-            );
-            if (isAdult) return false;
-        }
-
-        // 3. Lite Search (Hapus yang berat atau bertanda heavy: true)
-        if (liteMode) {
-            const isHeavy = HEAVY_DOMAINS.some(domain => url.includes(domain)) || item.heavy === true;
-            if (isHeavy) return false;
-        }
-
-        return true;
-    });
-
-    let resultsHtml = '';
-    localResults.forEach(item => {
-        const desc = item.desc || item.description || '';
-        resultsHtml += `
-            <div style="margin-bottom: 22px;">
-                <div>
-                    <a href="${item.url}" target="_blank" style="font-size: 17px; color: #0022aa; text-decoration: underline;">${item.title}</a>
-                </div>
-                <div style="color: #006621; font-size: 12px; margin: 1px 0 2px 0; word-break: break-all;">${item.url}</div>
-                <div style="color: #000; font-size: 13.5px; line-height: 1.35; max-width: 680px;">${desc}</div>
-            </div>
-        `;
-    });
-
-    if (resultsHtml === '') {
-        resultsHtml = `<p style="font-size: 14px; margin-top: 20px;">No direct matches found in index for "<b>${rawQuery}</b>" (Lite Mode: ${liteMode ? 'ON' : 'OFF'}).</p>`;
-    }
-
+// Halaman Settings (SafeSearch + Lite Mode)
+app.get('/settings', (req, res) => {
     res.send(`
         <!DOCTYPE html>
         <html lang="id">
         <head>
             <meta charset="UTF-8">
-            <title>${rawQuery} - ChickSearch</title>
+            <title>Settings - ChickSearch</title>
             <link rel="icon" type="image/png" href="/logo.png">
             <style>
                 body {
                     font-family: 'Times New Roman', Times, serif;
                     background-color: #ffffff;
                     color: #000000;
-                    margin: 15px 25px;
-                    padding: 0;
-                }
-                .header {
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                    margin-bottom: 15px;
-                }
-                .search-box {
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;
+                    margin: 20px auto;
+                    max-width: 650px;
+                    padding: 0 15px;
                 }
                 .brand {
                     font-family: Georgia, serif;
@@ -304,68 +236,45 @@ app.get('/search', (req, res) => {
                     color: #6a0dad;
                     text-decoration: none;
                 }
-                input[type="text"] {
-                    font-family: monospace, sans-serif;
-                    font-size: 13px;
-                    padding: 2px 4px;
-                    width: 260px;
-                    border: 1px solid #7f9db9;
-                }
-                input[type="submit"] {
-                    font-family: monospace, sans-serif;
-                    font-size: 12px;
-                    padding: 2px 6px;
-                    background: #f0f0f0;
-                    border: 1px solid #707070;
-                    cursor: pointer;
-                }
-                .top-link {
-                    color: #6a0dad;
-                    font-size: 13px;
-                    font-family: sans-serif;
-                    text-decoration: none;
-                    margin-left: 12px;
-                }
-                .mode-badge {
+                a { color: #0022aa; }
+                .card {
+                    margin-top: 15px;
+                    padding: 15px;
+                    border: 1px solid #ccc;
                     font-family: monospace;
-                    font-size: 12px;
-                    color: ${liteMode ? '#008000' : '#888'};
-                    margin-bottom: 20px;
+                    font-size: 13px;
+                    line-height: 1.6;
                 }
             </style>
         </head>
         <body>
-            <div class="header">
-                <div class="search-box">
-                    <a href="/" class="brand">chick</a>
-                    <form action="/search" method="GET" style="margin: 0; display: inline;" onsubmit="attachParams(this)">
-                        <input type="text" name="q" value="${rawQuery}" required>
-                        <input type="hidden" name="safe" id="safeInput" value="${safeMode ? '1' : '0'}">
-                        <input type="hidden" name="lite" id="liteInput" value="${liteMode ? '1' : '0'}">
-                        <input type="submit" value="Search">
-                    </form>
-                </div>
-                <div>
-                    <a href="/settings" class="top-link">Settings</a>
-                    <a href="/status" class="top-link">Status</a>
-                </div>
-            </div>
+            <p><a href="/">&lt;-- Back to Home</a></p>
+            <a href="/" class="brand">chick</a> <span style="font-size: 20px; font-weight: bold;">Settings</span>
+            <hr>
 
-            <div class="mode-badge">
-                [Lite Mode: <b>${liteMode ? 'ACTIVE (Pure HTML/Retro Only)' : 'OFF'}</b>]
-                — <a href="/search?q=${encodeURIComponent(rawQuery)}&safe=${safeMode ? '1' : '0'}&lite=${liteMode ? '0' : '1'}" style="color: #0000ee;">[Toggle ${liteMode ? 'OFF' : 'ON'}]</a>
-            </div>
-
-            <div class="results-container">
-                ${resultsHtml}
+            <div class="card">
+                <p><strong>Search Filters & Preferences:</strong></p>
+                <label style="cursor: pointer; display: block; margin-bottom: 10px;">
+                    <input type="checkbox" id="safeSearchCheck" onchange="saveSetting()"> 
+                    <b>SafeSearch</b>: Filter / Censor adult & unsafe content
+                </label>
+                <label style="cursor: pointer; display: block; margin-bottom: 10px;">
+                    <input type="checkbox" id="liteSearchCheck" onchange="saveSetting()"> 
+                    <b>Lite Search Mode</b>: Exclude bloated/heavy dynamic pages (pure HTML/retro only)
+                </label>
+                <hr style="border: 0; border-top: 1px dashed #ccc; margin: 12px 0;">
+                <small style="color: #666;">Preferences are saved locally in your browser storage.</small>
             </div>
 
             <script>
-                function attachParams(form) {
-                    const isSafe = localStorage.getItem('chick_safesearch') !== 'false';
-                    const isLite = localStorage.getItem('chick_litesearch') === 'true';
-                    form.querySelector('#safeInput').value = isSafe ? '1' : '0';
-                    form.querySelector('#liteInput').value = isLite ? '1' : '0';
+                document.getElementById('safeSearchCheck').checked = localStorage.getItem('chick_safesearch') !== 'false';
+                document.getElementById('liteSearchCheck').checked = localStorage.getItem('chick_litesearch') === 'true';
+
+                function saveSetting() {
+                    const safe = document.getElementById('safeSearchCheck').checked;
+                    const lite = document.getElementById('liteSearchCheck').checked;
+                    localStorage.setItem('chick_safesearch', safe);
+                    localStorage.setItem('chick_litesearch', lite);
                 }
             </script>
         </body>
