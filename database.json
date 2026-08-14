@@ -225,5 +225,35 @@
     "description": "A simple, fun & creative way to capture, edit & share photos, videos & messages with friends.",
     "url": "https://www.instagram.com",
     "specific_answer": "Instagram Feed: Visual media network online. Stories, Reels, and Direct Messaging ready."
+  },  
+  {
+    "title": "World Wide Web - The Original Project",
+    "url": "http://info.cern.ch/hypertext/WWW/TheProject.html",
+    "desc": "The first website ever created by Tim Berners-Lee at CERN."
+  },
+  {
+    "title": "TEXTFILES.COM",
+    "url": "http://www.textfiles.com",
+    "desc": "A collection of historical text files, BBS archives, and ASCII art from the 80s and 90s."
+  },
+  {
+    "title": "Space Jam (1996 Original Site)",
+    "url": "http://www.warnerbros.com/archive/spacejam/movie/jam.htm",
+    "desc": "The untouched classic official Warner Bros website for the 1996 Space Jam movie."
+  },
+  {
+    "title": "ToastyTech - Graphical User Interface Gallery",
+    "url": "http://toastytech.com/guis/",
+    "desc": "Screenshots and history of classic vintage operating systems and desktop GUIs."
+  },
+  {
+    "title": "FrogFind! - Search Engine for Vintage Computers",
+    "url": "http://frogfind.com",
+    "desc": "The search engine designed specifically for vintage browsers and classic computers."
+  },
+  {
+    "title": "68k.news",
+    "url": "http://68k.news",
+    "desc": "Headlines and current news formatted specifically for classic vintage Macs and browsers."
   }
 ]
