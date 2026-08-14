@@ -23,6 +23,11 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
+// ROUTE KHUSUS LOGO GAMBAR
+app.get('/logo.png', (req, res) => {
+    res.sendFile(path.join(__dirname, 'logo.png'));
+});
+
 // Fitur Surprise Me (Random Site Redirect)
 app.get('/surprise', (req, res) => {
     const db = getLocalDatabase();
