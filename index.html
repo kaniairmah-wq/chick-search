@@ -63,10 +63,21 @@
     <p>Search engine for the classic web.</p>
 
     <!-- Form Search -->
-    <form action="/search" method="GET">
+    <form action="/search" method="GET" onsubmit="attachHomeParams(this)">
         <input type="text" name="q" placeholder="type here..." required autofocus>
+        <input type="hidden" name="safe" id="homeSafeInput" value="1">
+        <input type="hidden" name="lite" id="homeLiteInput" value="0">
         <input type="submit" value="Search">
     </form>
+
+    <script>
+        function attachHomeParams(form) {
+            const isSafe = localStorage.getItem('chick_safesearch') !== 'false';
+            const isLite = localStorage.getItem('chick_litesearch') === 'true';
+            form.querySelector('#homeSafeInput').value = isSafe ? '1' : '0';
+            form.querySelector('#homeLiteInput').value = isLite ? '1' : '0';
+        }
+    </script>
 
     <!-- Menu Navigasi Ala Wiby -->
     <div class="nav">

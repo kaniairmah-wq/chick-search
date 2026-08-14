@@ -139,10 +139,84 @@ app.get('/settings', (req, res) => {
 });
 
 // Main Search Route
+// Halaman Settings (SafeSearch + Lite Mode)
+app.get('/settings', (req, res) => {
+    res.send(`
+        <!DOCTYPE html>
+        <html lang="id">
+        <head>
+            <meta charset="UTF-8">
+            <title>Settings - ChickSearch</title>
+            <link rel="icon" type="image/png" href="/logo.png">
+            <style>
+                body {
+                    font-family: 'Times New Roman', Times, serif;
+                    background-color: #ffffff;
+                    color: #000000;
+                    margin: 20px auto;
+                    max-width: 650px;
+                    padding: 0 15px;
+                }
+                .brand {
+                    font-family: Georgia, serif;
+                    font-size: 26px;
+                    font-weight: bold;
+                    color: #6a0dad;
+                    text-decoration: none;
+                }
+                a { color: #0022aa; }
+                .card {
+                    margin-top: 15px;
+                    padding: 15px;
+                    border: 1px solid #ccc;
+                    font-family: monospace;
+                    font-size: 13px;
+                }
+            </style>
+        </head>
+        <body>
+            <p><a href="/">&lt;-- Back to Home</a></p>
+            <a href="/" class="brand">chick</a> <span style="font-size: 20px; font-weight: bold;">Settings</span>
+            <hr>
+
+            <div class="card">
+                <p><strong>Search Filters & Preferences</strong></p>
+                <label style="cursor: pointer;">
+                    <input type="checkbox" id="safeSearchCheck" onchange="saveSetting()"> 
+                    <b>SafeSearch</b>: Filter / Censor adult & unsafe content
+                </label>
+                <br><br>
+                <label style="cursor: pointer;">
+                    <input type="checkbox" id="liteSearchCheck" onchange="saveSetting()"> 
+                    <b>Lite Search Mode</b>: Exclude bloated/heavy dynamic pages (pure text/retro only)
+                </label>
+                <br><br>
+                <small style="color: #666;">Preferences are saved locally in your browser.</small>
+            </div>
+
+            <script>
+                // Load saved preferences
+                document.getElementById('safeSearchCheck').checked = localStorage.getItem('chick_safesearch') !== 'false';
+                document.getElementById('liteSearchCheck').checked = localStorage.getItem('chick_litesearch') === 'true';
+
+                function saveSetting() {
+                    const safe = document.getElementById('safeSearchCheck').checked;
+                    const lite = document.getElementById('liteSearchCheck').checked;
+                    localStorage.setItem('chick_safesearch', safe);
+                    localStorage.setItem('chick_litesearch', lite);
+                }
+            </script>
+        </body>
+        </html>
+    `);
+});
+
+// Main Search Route (With SafeSearch + Lite Search support)
 app.get('/search', (req, res) => {
     const rawQuery = req.query.q || '';
     const query = rawQuery.toLowerCase().trim();
-    const safeMode = req.query.safe !== '0'; // default safe search aktif
+    const safeMode = req.query.safe !== '0';
+    const liteMode = req.query.lite === '1'; // Lite Search aktif
 
     if (!query) return res.redirect('/');
 
@@ -155,7 +229,10 @@ app.get('/search', (req, res) => {
         } catch (e) {}
     }
 
-    // Filter dari Database Lokal (Mencakup title, desc, url, sub-path & keywords)
+    // List domain berat/bloated yang di-skip pas Lite Mode aktif
+    const HEAVY_DOMAINS = ['youtube.com', 'facebook.com', 'instagram.com', 'tiktok.com', 'twitter.com', 'x.com', 'reddit.com'];
+
+    // Filter dari Database Lokal
     const LOCAL_DATABASE = getLocalDatabase();
     const localResults = LOCAL_DATABASE.filter(item => {
         const title = (item.title || '').toLowerCase();
@@ -163,16 +240,22 @@ app.get('/search', (req, res) => {
         const url = (item.url || '').toLowerCase();
         const keywords = Array.isArray(item.keywords) ? item.keywords.join(' ').toLowerCase() : (item.keywords || '').toLowerCase();
 
-        // 1. Cek apakah cocok sama query pencarian (termasuk url sub-path)
+        // 1. Cek kecocokan query
         const isMatch = title.includes(query) || desc.includes(query) || url.includes(query) || keywords.includes(query);
         if (!isMatch) return false;
 
-        // 2. Cek Sensor Konten Dewasa
+        // 2. Filter SafeSearch
         if (safeMode) {
             const isAdult = ADULT_KEYWORDS.some(badWord => 
                 title.includes(badWord) || desc.includes(badWord) || url.includes(badWord) || keywords.includes(badWord)
             );
             if (isAdult) return false;
+        }
+
+        // 3. Filter Lite Search (Skip konten berat / dynamic apps)
+        if (liteMode) {
+            const isHeavy = HEAVY_DOMAINS.some(domain => url.includes(domain)) || item.heavy === true;
+            if (isHeavy) return false;
         }
 
         return true;
@@ -251,16 +334,16 @@ app.get('/search', (req, res) => {
                     text-decoration: none;
                     margin-left: 12px;
                 }
-                .top-link:hover { text-decoration: underline; }
             </style>
         </head>
         <body>
             <div class="header">
                 <div class="search-box">
                     <a href="/" class="brand">chick</a>
-                    <form action="/search" method="GET" style="margin: 0; display: inline;" onsubmit="attachSafeParam(this)">
+                    <form action="/search" method="GET" style="margin: 0; display: inline;" onsubmit="attachParams(this)">
                         <input type="text" name="q" value="${rawQuery}" required>
                         <input type="hidden" name="safe" id="safeInput" value="1">
+                        <input type="hidden" name="lite" id="liteInput" value="0">
                         <input type="submit" value="Search">
                     </form>
                 </div>
@@ -277,9 +360,11 @@ app.get('/search', (req, res) => {
             </div>
 
             <script>
-                function attachSafeParam(form) {
+                function attachParams(form) {
                     const isSafe = localStorage.getItem('chick_safesearch') !== 'false';
+                    const isLite = localStorage.getItem('chick_litesearch') === 'true';
                     form.querySelector('#safeInput').value = isSafe ? '1' : '0';
+                    form.querySelector('#liteInput').value = isLite ? '1' : '0';
                 }
             </script>
         </body>
