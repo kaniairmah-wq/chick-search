@@ -104,28 +104,23 @@ app.get('/search', (req, res) => {
         resultsHtml = `<p style="font-family: 'Courier New', monospace; padding: 10px;">[!] NO DIRECT MATCHES FOUND IN INDEX FOR "${rawQuery}".</p>`;
     }
 
-    res.send(`
+        res.send(`
         <!DOCTYPE html>
-        <html lang="en">
+        <html>
         <head>
-            <meta charset="UTF-8">
-            <title>ChickSearch: ${rawQuery}</title>
+            <title>ChickSearch - ${rawQuery}</title>
+            <style>
+                body { font-family: monospace; max-width: 650px; margin: 40px auto; padding: 0 10px; }
+                a { color: #0000ee; }
+                .result { margin-bottom: 20px; }
+                .url { color: green; font-size: 12px; }
+            </style>
         </head>
-        <body style="background: #3b6ea5; margin: 0; padding: 20px; font-family: Arial, sans-serif;">
-            <div style="background: #c0c0c0; border: 2px outset #fff; max-width: 750px; margin: 0 auto; padding: 15px;">
-                <h2 style="margin-top: 0; color: #000; border-bottom: 2px solid #808080; padding-bottom: 5px; font-family: 'Courier New', monospace;">QUERY: "${rawQuery.toUpperCase()}"</h2>
-                
-                <div style="margin-bottom: 15px; font-family: 'Courier New', monospace; font-size: 13px;">
-                    <a href="/" style="color: #000; font-weight: bold;">[&lt;- HOME]</a> | 
-                    <a href="/surprise" style="color: #0000ff; font-weight: bold;">[SURPRISE ME 🎲]</a> | 
-                    <a href="/status" style="color: #008000; font-weight: bold;">[SYSTEM STATUS 🖥️]</a>
-                </div>
-
-                ${calcResultWidget}
-
-                <h3 style="font-family: 'Courier New', monospace; color: #000080; margin-top: 15px;">--- SEARCH INDEX RESULTS (${localResults.length}) ---</h3>
-                ${resultsHtml}
-            </div>
+        <body>
+            <p><a href="/">&lt;-- Back to Home</a></p>
+            <h2>Results for "${rawQuery}"</h2>
+            <hr>
+            ${resultsHtml}
         </body>
         </html>
     `);

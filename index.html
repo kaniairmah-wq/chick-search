@@ -1,224 +1,76 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ChickSearch Central Terminal v2.0</title>
+    <title>ChickSearch</title>
     <style>
         body {
-            background-color: #3b6ea5; /* Retro default operating system backdrop teal color */
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 40px 10px;
-            display: flex;
-            justify-content: center;
+            font-family: monospace, sans-serif;
+            background-color: #ffffff;
+            color: #000000;
+            margin: 40px auto;
+            max-width: 650px;
+            padding: 0 10px;
         }
-
-        .window {
-            background: #c0c0c0;
-            border-top: 2px solid #fff;
-            border-left: 2px solid #fff;
-            border-right: 2px solid #808080;
-            border-bottom: 2px solid #808080;
-            width: 600px;
-            padding: 4px;
-            box-shadow: 3px 3px 12px rgba(0,0,0,0.4);
-        }
-
-        .title-bar {
-            background: #000080;
-            color: #ffffff;
-            padding: 4px 8px;
-            font-weight: bold;
-            font-size: 14px;
-            text-align: left;
-            letter-spacing: 0.5px;
-        }
-
-        .window-body {
-            padding: 25px 15px;
-            text-align: center;
-        }
-
         h1 {
-            font-family: "Courier New", monospace;
-            font-size: 2.4rem;
-            color: #000;
-            margin: 0;
-            font-weight: bold;
+            font-size: 28px;
+            margin-bottom: 5px;
         }
-
-        .tagline {
-            font-family: "Courier New", monospace;
-            font-size: 13px;
-            color: #222;
-            margin: 5px 0 25px 0;
-            font-weight: bold;
+        a {
+            color: #0000ee;
+            text-decoration: underline;
         }
-
-        form {
-            display: flex;
-            gap: 5px;
-            justify-content: center;
-            margin-bottom: 30px;
+        a:visited {
+            color: #551a8b;
         }
-
-        input[type="search"] {
-            background: #ffffff;
-            border-top: 2px solid #808080;
-            border-left: 2px solid #808080;
-            border-right: 2px solid #fff;
-            border-bottom: 2px solid #fff;
-            padding: 6px 10px;
-            font-size: 14px;
-            font-family: 'Courier New', monospace;
-            font-weight: bold;
-            outline: none;
+        input[type="text"] {
             width: 70%;
-        }
-
-        button {
-            background: #c0c0c0;
-            border-top: 2px solid #fff;
-            border-left: 2px solid #fff;
-            border-right: 2px solid #808080;
-            border-bottom: 2px solid #808080;
-            padding: 6px 18px;
+            padding: 5px;
+            font-family: monospace;
             font-size: 14px;
-            font-weight: bold;
-            color: #000;
+            border: 1px solid #000;
+        }
+        input[type="submit"] {
+            padding: 5px 10px;
+            font-family: monospace;
+            font-size: 14px;
+            background: #efefef;
+            border: 1px solid #000;
             cursor: pointer;
         }
-
-        button:disabled { color: #808080; cursor: not-allowed; }
-        button:active:not(:disabled) { border-top:2px solid #808080; border-left:2px solid #808080; border-right:2px solid #fff; border-bottom:2px solid #fff; }
-
-        /* Alphabet Dictionary Panel Style */
-        .alphabet-box {
-            background: #fff;
-            border: 2px inset #808080;
-            padding: 10px;
-            margin-top: 25px;
+        .nav {
+            margin-top: 15px;
+            font-size: 14px;
         }
-
-        .alphabet-box title {
-            display: block;
-            font-family: Arial, sans-serif;
+        .footer {
+            margin-top: 50px;
             font-size: 12px;
-            font-weight: bold;
-            color: #000;
-            margin-bottom: 8px;
-            text-transform: uppercase;
+            color: #666;
         }
-
-        .alpha-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 4px;
-            justify-content: center;
-        }
-
-        .alpha-link {
-            background: #c0c0c0;
-            border-top: 1px solid #fff;
-            border-left: 1px solid #fff;
-            border-right: 1px solid #808080;
-            border-bottom: 1px solid #808080;
-            color: #000;
-            text-decoration: none;
-            font-family: 'Courier New', monospace;
-            font-weight: bold;
-            font-size: 13px;
-            width: 22px;
-            height: 22px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .alpha-link:hover { background: #000080; color: #fff; }
-
-        footer {
-            margin-top: 30px;
-            border-top: 2px solid #808080;
-            padding-top: 12px;
-            font-size: 12px;
-            font-family: 'Courier New', monospace;
-            color: #000;
-            font-weight: bold;
-        }
-
-        .status-ready { color: green; }
-        .status-offline { color: red; }
     </style>
 </head>
 <body>
 
-    <div class="window">
-        <div class="title-bar">
-            🌐 ChickSearch Central Terminal v2.0
-        </div>
-        <div class="window-body">
-            <header>
-                <h1>ChickSearch Intel</h1>
-                <p class="tagline">Global Core Index Engine + Real-Time AI Summary Processing.</p>
-            </header>
+    <h1>ChickSearch</h1>
+    <p>Search engine for the classic web.</p>
 
-            <main>
-                <form action="/search" method="GET">
-                    <input id="searchInput" type="search" name="q" placeholder="Search any concept, word, or portal site..." required autofocus autocomplete="off">
-                    <button id="searchButton" type="submit">QUERY</button>
-                </form>
+    <!-- Form Search -->
+    <form action="/search" method="GET">
+        <input type="text" name="q" placeholder="type here..." required autofocus>
+        <input type="submit" value="Search">
+    </form>
 
-                <!-- RETRO ALPHABET DIRECTORY BROWSER COMPONENT LAYER -->
-                <div class="alphabet-box">
-                    <span style="font-size:12px; font-weight:bold; display:block; margin-bottom:6px; color:#000; font-family:sans-serif; text-align:left;">📖 ENCYCLOPEDIA ALPHABET DICTIONARY BROWSER:</span>
-                    <div class="alpha-grid" id="alphabetGrid"></div>
-                </div>
-            </main>
-
-            <footer>
-                <p>CORE PORT INTERFACE STATUS: <span id="statusIndicator" class="status-ready">READY</span></p>
-            </footer>
-        </div>
+    <!-- Menu Navigasi Ala Wiby -->
+    <div class="nav">
+        <a href="/surprise">Surprise Me</a> | 
+        <a href="/status">System Status</a>
     </div>
 
-    <script>
-        // Dynamically build the interactive A-Z system interface panel row layout
-        const grid = document.getElementById('alphabetGrid');
-        const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
-        alphabet.forEach(letter => {
-            const link = document.createElement('a');
-            link.href = `/search?q=${letter}`;
-            link.className = 'alpha-link';
-            link.innerText = letter;
-            grid.appendChild(link);
-        });
+    <div class="footer">
+        <hr style="border: 0; border-top: 1px solid #ccc;">
+        <p>ChickSearch Web Portal Engine &copy; 2026</p>
+    </div>
 
-        // Server-Side System Monitoring Heartbeat Ping Checks
-        const statusText = document.getElementById('statusIndicator');
-        const searchInput = document.getElementById('searchInput');
-        const searchButton = document.getElementById('searchButton');
-
-        function checkServerStatus() {
-            fetch('/', { method: 'HEAD', cache: 'no-store' })
-                .then(response => {
-                    if (response.ok) {
-                        statusText.innerText = "READY";
-                        statusText.className = "status-ready";
-                        searchInput.disabled = false;
-                        searchButton.disabled = false;
-                    }
-                })
-                .catch(() => {
-                    statusText.innerText = "NOT READY";
-                    statusText.className = "status-offline";
-                    searchInput.disabled = true;
-                    searchButton.disabled = true;
-                });
-        }
-        checkServerStatus();
-        setInterval(checkServerStatus, 3000);
-    </script>
 </body>
 </html>
