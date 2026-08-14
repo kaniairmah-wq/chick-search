@@ -143,6 +143,7 @@ app.get('/settings', (req, res) => {
 });
 
 // Main Search Route (with real Gemini 3.7 Flash AI Overview)
+// Main Search Route
 app.get('/search', async (req, res) => {
     const rawQuery = req.query.q || '';
     const query = rawQuery.toLowerCase().trim();
@@ -167,42 +168,46 @@ app.get('/search', async (req, res) => {
         return title.includes(query) || desc.includes(query) || url.includes(query);
     });
 
-    // Real Gemini 3.7 Flash Generation
-    let aiOverviewWidget = '';
-    if (query.length > 0) {
+    // AI Overview Logic (With Guaranteed Fallback)
+    let aiText = '';
+    
+    // Coba panggil Gemini dulu
+    if (process.env.GEMINI_API_KEY) {
         try {
-            const prompt = `You are the AI Overview summary engine for ChickSearch (a retro search engine).
-The user is searching for: "${rawQuery}".
-Indexed websites available in context: ${JSON.stringify(localResults.slice(0, 4))}.
-
-Instructions:
-- Provide a clear, concise overview in English (2 to 3 sentences max).
-- If specific retro/indexed websites match, briefly synthesize what the user can find.
-- Tone: Natural, direct, helpful search engine summary.`;
-
+            const prompt = `Summarize search results for "${rawQuery}" concisely in English (2 sentences max). Data: ${JSON.stringify(localResults.slice(0, 3))}`;
             const response = await ai.models.generateContent({
                 model: 'gemini-2.5-flash',
                 contents: prompt,
             });
-
-            const aiText = response.text || '';
-            if (aiText) {
-                aiOverviewWidget = `
-                    <div style="background-color: #f8f9fa; border: 1px solid #dcdcdc; border-radius: 8px; padding: 14px; margin-bottom: 25px; max-width: 680px; font-family: sans-serif;">
-                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
-                            <span style="font-size: 16px;">✨</span>
-                            <strong style="font-size: 13px; color: #1a0dab; text-transform: uppercase; letter-spacing: 0.5px;">AI Overview (Gemini Flash)</strong>
-                        </div>
-                        <div style="font-size: 13.5px; line-height: 1.6; color: #202124;">
-                            ${aiText.replace(/\n/g, '<br>')}
-                        </div>
-                    </div>
-                `;
-            }
+            aiText = response.text || '';
         } catch (err) {
-            console.error("Gemini AI API Error:", err.message);
+            console.error("Gemini API Error:", err.message);
         }
     }
+
+    // Fallback otomatis kalau API mati / belum pasang Key
+    if (!aiText) {
+        if (query.length <= 2) {
+            aiText = `Showing top classic web entries associated with the term "<b>${rawQuery}</b>". Found <b>${localResults.length}</b> direct matches indexed across the catalog.`;
+        } else if (localResults.length > 0) {
+            const points = localResults.slice(0, 3).map(r => `• <b>${r.title}:</b> ${r.desc || r.description}`).join('<br>');
+            aiText = `Overview of classic web resources for "<b>${rawQuery}</b>":<br><br>${points}`;
+        } else {
+            aiText = `No indexed records found for "<b>${rawQuery}</b>" in the vintage web directory. Try searching broader keywords like 'retro', 'games', or 'portal'.`;
+        }
+    }
+
+    const aiOverviewWidget = `
+        <div style="background-color: #f8f9fa; border: 1px solid #dcdcdc; border-radius: 8px; padding: 14px; margin-bottom: 25px; max-width: 680px; font-family: sans-serif;">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                <span style="font-size: 16px;">✨</span>
+                <strong style="font-size: 13px; color: #1a0dab; text-transform: uppercase; letter-spacing: 0.5px;">AI Overview</strong>
+            </div>
+            <div style="font-size: 13.5px; line-height: 1.6; color: #202124;">
+                ${aiText}
+            </div>
+        </div>
+    `;
 
     // Generate Daftar Web
     let resultsHtml = '';
